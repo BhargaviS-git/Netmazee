@@ -1,0 +1,54 @@
+Create the Second Resource Group (if needed):
+az group create --name MyOnPremResourceGroup --location westeurope
+
+ Create the Second Virtual Network (On-Premises Simulation VNet):
+az network vnet create \
+  --resource-group MyOnPremResourceGroup \
+  --name MyOnPremVNet \
+  --address-prefix 10.1.0.0/16 \
+  --location westeurope
+
+Create Subnets for the On-Premises Simulation VNet:
+On-Prem WebApp Subnet (10.1.1.0/24):
+az network vnet subnet create \
+  --resource-group MyOnPremResourceGroup \
+  --vnet-name MyOnPremVNet \
+  --name OnPremWebAppSubnet \
+  --address-prefix 10.1.1.0/24
+
+On-Prem Database Subnet (10.1.2.0/24):
+az network vnet subnet create \
+  --resource-group MyOnPremResourceGroup \
+  --vnet-name MyOnPremVNet \
+  --name OnPremDatabaseSubnet \
+  --address-prefix 10.1.2.0/24
+
+On-Prem Admin Subnet (10.1.3.0/24):
+az network vnet subnet create \
+  --resource-group MyOnPremResourceGroup \
+  --vnet-name MyOnPremVNet \
+  --name OnPremAdminSubnet \
+  --address-prefix 10.1.3.0/24
+
+Peer the VNets (First VNet to Second VNet):
+az network vnet peering create \
+  --resource-group MyResourceGroup \
+  --vnet-name MyVNet \
+  --name MyVNet-to-MyOnPremVNet \
+  --remote-vnet "/subscriptions/{subscription-id}/resourceGroups/MyOnPremResourceGroup/providers/Microsoft.Network/virtualNetworks/MyOnPremVNet" \
+  --allow-vnet-access
+
+Peer the VNets (Second VNet to First VNet):
+az network vnet peering create \
+  --resource-group MyOnPremResourceGroup \
+  --vnet-name MyOnPremVNet \
+  --name MyOnPremVNet-to-MyVNet \
+  --remote-vnet "/subscriptions/{subscription-id}/resourceGroups/MyResourceGroup/providers/Microsoft.Network/virtualNetworks/MyVNet" \
+  --allow-vnet-access
+
+Verify VNet Peering:
+az network vnet peering list --resource-group MyResourceGroup --vnet-name MyVNet --output table
+
+az network vnet peering list --resource-group MyOnPremResourceGroup --vnet-name MyOnPremVNet --output table
+
+
