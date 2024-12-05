@@ -1,0 +1,48 @@
+az login
+
+az account set --subscription "Your-Subscription-ID"
+
+az group create --name MyResourceGroup --location eastus
+
+az network vnet create \
+  --resource-group MyResourceGroup \
+  --name MyVNet \
+  --address-prefix 10.0.0.0/16 \
+  --location eastus
+
+WebApp Subnet (10.0.1.0/24):
+az network vnet subnet create \
+  --resource-group MyResourceGroup \
+  --vnet-name MyVNet \
+  --name WebAppSubnet \
+  --address-prefix 10.0.1.0/24
+
+Database Subnet (10.0.2.0/24):
+az network vnet subnet create \
+  --resource-group MyResourceGroup \
+  --vnet-name MyVNet \
+  --name DatabaseSubnet \
+  --address-prefix 10.0.2.0/24
+
+Admin Subnet (10.0.3.0/24):
+az network vnet subnet create \
+  --resource-group MyResourceGroup \
+  --vnet-name MyVNet \
+  --name AdminSubnet \
+  --address-prefix 10.0.3.0/24
+
+Verify VNet and Subnets:
+az network vnet show --resource-group MyResourceGroup --name MyVNet
+
+Add Network Security Groups (NSGs)
+az network nsg create \
+  --resource-group MyResourceGroup \
+  --name WebAppNSG
+
+az network vnet subnet update \
+  --resource-group MyResourceGroup \
+  --vnet-name MyVNet \
+  --name WebAppSubnet \
+  --network-security-group WebAppNSG
+
+
