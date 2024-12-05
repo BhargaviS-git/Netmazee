@@ -1,0 +1,40 @@
+Create a Custom Domain Name in Azure DNS
+az network dns zone create \
+  --resource-group MyResourceGroup \
+  --name mycustomdomain.com
+
+Add DNS Records for Resources:
+az network dns record-set a add-record \
+  --resource-group MyResourceGroup \
+  --zone-name mycustomdomain.com \
+  --record-set-name www \
+  --ipv4-address <LoadBalancerPublicIP>
+
+Configure Custom Domain for Azure Resources (Optional):
+
+Part 2: Configure Azure Load Balancer to Distribute Traffic Across VMs in the WebApp Subnet
+
+Step 1: Create an Azure Load Balancer
+Create a Load Balancer:
+Create a Public IP Address:
+az network public-ip create \
+  --resource-group MyResourceGroup \
+  --name MyLoadBalancerPublicIP \
+  --sku Standard \
+  --allocation-method Static \
+  --location eastus
+
+Step 2: Create a Backend Pool for the Load Balancer
+Define a Backend Pool:
+Add Network Interfaces (NICs) to the Backend Pool:
+az network lb address-pool address add \
+  --resource-group MyResourceGroup \
+  --lb-name MyWebAppLoadBalancer \
+  --pool-name WebAppBackendPool \
+  --ip-address <VMPrivateIP>
+
+Step 3: Configure Health Probes
+
+Step 4: Configure Load Balancer Rules
+
+-Step 5: Test the Load Balancer
