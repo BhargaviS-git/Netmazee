@@ -1,0 +1,55 @@
+Create a Public IP Address for the VPN Gateway:
+az network public-ip create \
+  --resource-group MyResourceGroup \
+  --name MyVNetGatewayPublicIP \
+  --allocation-method Dynamic \
+  --sku Basic
+
+Create the VPN Gateway Subnet (GatewaySubnet):
+az network vnet subnet create \
+  --resource-group MyResourceGroup \
+  --vnet-name MyVNet \
+  --name GatewaySubnet \
+  --address-prefix 10.0.255.0/27
+
+Create the Virtual Network Gateway:
+az network vnet-gateway create \
+  --resource-group MyResourceGroup \
+  --name MyVNetGateway \
+  --public-ip-address MyVNetGatewayPublicIP \
+  --vnet MyVNet \
+  --gateway-type VPN \
+  --vpn-type RouteBased \
+  --sku VpnGw1 \
+  --generation Generation1
+
+Wait for the VPN Gateway to be created:
+az network vnet-gateway show \
+  --resource-group MyResourceGroup \
+  --name MyVNetGateway
+
+Create the Local Network Gateway:
+az network local-gateway create \
+  --resource-group MyOnPremResourceGroup \
+  --name MyOnPremLocalGateway \
+  --gateway-ip-address <on-prem-public-ip> \
+  --local-address-prefixes 10.1.0.0/16
+
+Create the VPN Connection
+az network vpn-connection create \
+  --resource-group MyResourceGroup \
+  --name MyVNet-to-OnPremVPNConnection \
+  --vnet-gateway1 MyVNetGateway \
+  --local-gateway2 MyOnPremLocalGateway \
+  --shared-key "YourSharedSecret"
+
+Check VPN Connection Status:
+az network vpn-connection show \
+  --resource-group MyResourceGroup \
+  --name MyVNet-to-OnPremVPNConnection
+
+Test Connectivity:
+ping <VM-IP-in-OnPremVNet>
+
+ping <VM-IP-in-MyVNet>
+
