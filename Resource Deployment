@@ -1,0 +1,63 @@
+Create a Network Interface (NIC) for the VM:
+az network nic create \
+  --resource-group MyResourceGroup \
+  --name MyWebAppVMNic \
+  --vnet-name MyVNet \
+  --subnet WebAppSubnet \
+  --ip-config-name MyWebAppIPConfig \
+  --public-ip-address "" \
+  --private-ip-address 10.0.1.4
+
+Create the VM in the WebApp Subnet:
+az vm create \
+  --resource-group MyResourceGroup \
+  --name MyWebAppVM \
+  --nics MyWebAppVMNic \
+  --image UbuntuLTS \
+  --admin-username azureuser \
+  --admin-password <YourPassword> \
+  --size Standard_B1ms \
+  --location eastus
+
+Create a NIC for the Database Server VM:
+az network nic create \
+  --resource-group MyResourceGroup \
+  --name MyDatabaseVMNic \
+  --vnet-name MyVNet \
+  --subnet DatabaseSubnet \
+  --ip-config-name MyDatabaseIPConfig \
+  --public-ip-address "" \
+  --private-ip-address 10.0.2.4
+
+Create the VM in the Database Subnet:
+az vm create \
+  --resource-group MyResourceGroup \
+  --name MyDatabaseVM \
+  --nics MyDatabaseVMNic \
+  --image Win2019Datacenter \
+  --admin-username azureuser \
+  --admin-password <YourPassword> \
+  --size Standard_B1ms \
+  --location eastus
+
+Create a NIC for the Admin VM:
+az network nic create \
+  --resource-group MyResourceGroup \
+  --name MyAdminVMNic \
+  --vnet-name MyVNet \
+  --subnet AdminSubnet \
+  --ip-config-name MyAdminIPConfig \
+  --public-ip-address "" \
+  --private-ip-address 10.0.3.4
+
+ Create the Admin VM:
+az vm create \
+  --resource-group MyResourceGroup \
+  --name MyAdminVM \
+  --nics MyAdminVMNic \
+  --image Win2019Datacenter \
+  --admin-username azureuser \
+  --admin-password <YourPassword> \
+  --size Standard_B1ms \
+  --location eastus
+
